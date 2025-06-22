@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Connexion SCP Fondation</title>
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LcMiGkrAAAAAE7T9ertoFa_QuyaJDh7NXw-s5a9"></script>
 <style>
 /* === CSS décoratif global === */
 * {
@@ -106,7 +107,7 @@ input:focus, select:focus {
       <label for="password">Mot de passe :</label>
       <input type="password" id="password" required />
 
-      <button type="submit">Connexion / Création</button>
+      <button type="submit" onclick="onClick(event)">Connexion / Création</button>
     </form>
 
     <button id="googleLogin">Se connecter avec Google</button>
@@ -118,6 +119,14 @@ input:focus, select:focus {
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script>
+    function onClick(e) {
+      e.preventDefault();
+      grecaptcha.enterprise.ready(async () => {
+        const token = await grecaptcha.enterprise.execute('6LcMiGkrAAAAAE7T9ertoFa_QuyaJDh7NXw-s5a9', {action: 'LOGIN'});
+        document.getElementById('emailForm').dispatchEvent(new Event('submit'));
+      });
+    }
+
     const firebaseConfig = {
       apiKey: "AIzaSyBFDgtfyPyNPkM2H8WklNfLqlj-bemVY1E",
       authDomain: "sitedusite108.firebaseapp.com",
