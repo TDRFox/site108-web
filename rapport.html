@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rapport Gradé - SCP Fondation</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #e0e0e0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    align-items: center;
+  }
+  .container {
+    background: #0f3460dd;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px #16213eaa;
+    max-width: 500px;
+    width: 100%;
+  }
+  h1 {
+    color: #e94560;
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 0 0 5px #e94560cc;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
+  input[type="text"], textarea, select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #1a1a2e;
+    color: #eee;
+    font-size: 1rem;
+    box-shadow: inset 0 0 8px #16213e;
+    resize: vertical;
+  }
+  textarea {
+    min-height: 100px;
+  }
+  button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px 0;
+    background: #e94560;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 0 8px #e94560cc;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background: #f9a826;
+    color: #1a1a2e;
+    box-shadow: 0 0 10px #f9a826cc;
+  }
+  #statusMsg {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 600;
+  }
+  #statusMsg.success {
+    color: #7fff7f;
+  }
+  #statusMsg.error {
+    color: #ff6b6b;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Faire un Rapport Gradé</h1>
+    <form id="rapportForm">
+      <label for="auteur">Auteur :</label>
+      <input type="text" id="auteur" name="auteur" required placeholder="Ton pseudo ou nom" />
+
+      <label for="grade">Grade :</label>
+      <input type="text" id="grade" name="grade" required placeholder="Ton grade" />
+
+      <label for="sujet">Sujet :</label>
+      <input type="text" id="sujet" name="sujet" required placeholder="Sujet du rapport" />
+
+      <label for="description">Description :</label>
+      <textarea id="description" name="description" required placeholder="Détails du rapport..."></textarea>
+
+      <label for="gravite">Gravité :</label>
+      <select id="gravite" name="gravite" required>
+        <option value="" disabled selected>Choisir une gravité</option>
+        <option value="Faible">Faible</option>
+        <option value="Moyenne">Moyenne</option>
+        <option value="Élevée">Élevée</option>
+        <option value="Critique">Critique</option>
+      </select>
+
+      <button type="submit">Envoyer le rapport</button>
+    </form>
+    <p id="statusMsg"></p>
+  </div>
+
+<script>
+  // Remplace cette URL par ton webhook Discord
+  const webhookURL = "https://discord.com/api/webhooks/1386175475793137736/YcriccnDHSK4QZlqrXepiQfBJaTTbYjK-Ws2oUgONGpkcv7toOrnfQp5_kaGMYTN8ajK";
+
+  document.getElementById('rapportForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const statusMsg = document.getElementById('statusMsg');
+    statusMsg.textContent = '';
+    statusMsg.className = '';
+
+    // Récupérer valeurs
+    const auteur = document.getElementById('auteur').value.trim();
+    const grade = document.getElementById('grade').value.trim();
+    const sujet = document.getElementById('sujet').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const gravite = document.getElementById('gravite').value;
+
+    if(!auteur || !grade || !sujet || !description || !gravite){
+      statusMsg.textContent = "Merci de remplir tous les champs.";
+      statusMsg.className = "error";
+      return;
+    }
+
+    // Préparer payload Discord (embed)
+    const payload = {
+      embeds: [{
+        title: `📝 Rapport Gradé - ${sujet}`,
+        color: 15158332, // rouge foncé
+        fields: [
+          { name: "Auteur", value: auteur, inline: true },
+          { name: "Grade", value: grade, inline: true },
+          { name: "Gravité", value: gravite, inline: true },
+          { name: "Description", value: description }
+        ],
+        timestamp: new Date().toISOString()
+      }]
+    };
+
+    try {
+      const response = await fetch(webhookURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if(response.ok){
+        statusMsg.textContent = "Rapport envoyé avec succès !";
+        statusMsg.className = "success";
+        this.reset();
+      } else {
+        statusMsg.textContent = `Erreur lors de l'envoi : ${response.status}`;
+        statusMsg.className = "error";
+      }
+    } catch (err) {
+      statusMsg.textContent = "Erreur réseau ou webhook invalide.";
+      statusMsg.className = "error";
+    }
+  });
+</script>
+</body>
+</html>

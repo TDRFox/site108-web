@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Conseil O5 - SCP Fondation</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Conseil O5</h1>
+    <p>Zone strictement réservée aux membres du Conseil O5 (accréditation ≥ 8)</p>
+    <p><a href="dashboard.html">Retour au tableau de bord</a></p>
+
+    <section>
+      <h2>Membres Actuels du Conseil O5</h2>
+      <ul>
+        <li>O5-1 : Directeur Suprême</li>
+        <li>O5-2 : Chef des opérations</li>
+        <li>O5-3 : Responsable du Comité d’éthique</li>
+        <li>O5-4 : Chef de la sécurité globale</li>
+        <li>O5-5 : Expert en relations inter-agences</li>
+        <!-- Liste fictive, à adapter -->
+      </ul>
+    </section>
+
+    <section>
+      <h2>Informations Sensibles</h2>
+      <p>Accès restreint aux membres du Conseil O5. Toute diffusion non autorisée est passible de sanctions sévères.</p>
+      <!-- Ajoute ici tout contenu RP ou fonctionnalités spécifiques -->
+    </section>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFDgtfyPyNPkM2H8WklNfLqlj-bemVY1E",
+      authDomain: "sitedusite108.firebaseapp.com",
+      databaseURL: "https://sitedusite108-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "sitedusite108",
+      storageBucket: "sitedusite108.firebasestorage.app",
+      messagingSenderId: "927427226941",
+      appId: "1:927427226941:web:63a9a600bd1c3bfc85a954"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        alert("Non connecté !");
+        window.location.href = "index.html";
+        return;
+      }
+
+      db.ref('users/' + user.uid).once('value').then(snapshot => {
+        const data = snapshot.val();
+        if (!data) {
+          alert("Données utilisateur introuvables.");
+          auth.signOut();
+          window.location.href = "index.html";
+          return;
+        }
+
+        const accreditation = parseInt(data.accreditation) || 0;
+        if (accreditation < 8) {
+          alert("Accès refusé. Accréditation insuffisante pour le Conseil O5.");
+          window.location.href = "dashboard.html";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
