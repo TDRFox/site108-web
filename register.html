@@ -3,84 +3,264 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SCP Fondation - Inscription</title>
+<title>SCP FOUNDATION - INSCRIPTION</title>
 <style>
-  body { font-family: Arial, sans-serif; background:#121212; color:#eee; display:flex; justify-content:center; align-items:center; height:100vh; }
-  form { background:#222; padding:20px; border-radius:8px; width:320px; }
-  input, button { width:100%; padding:10px; margin:8px 0; border:none; border-radius:4px; }
-  input { background:#333; color:#eee; }
-  button { background:#5c6bc0; color:#fff; cursor:pointer; }
-  button:hover { background:#3949ab; }
-  a { color:#5c6bc0; text-decoration:none; }
-  a:hover { text-decoration:underline; }
-  #error {color:#ff5555;}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Courier New', monospace;
+}
+
+body { 
+  background: #000; 
+  color: #fff; 
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Grid background */
+.grid-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(0deg, transparent 24%,
+    rgba(128, 0, 0, .05) 25%,
+    rgba(128, 0, 0, .05) 26%,
+    transparent 27%, transparent 74%,
+    rgba(128, 0, 0, .05) 75%,
+    rgba(128, 0, 0, .05) 76%,
+    transparent 77%, transparent),
+    linear-gradient(90deg, transparent 24%,
+    rgba(128, 0, 0, .05) 25%,
+    rgba(128, 0, 0, .05) 26%,
+    transparent 27%, transparent 74%,
+    rgba(128, 0, 0, .05) 75%,
+    rgba(128, 0, 0, .05) 76%,
+    transparent 77%, transparent);
+  background-size: 50px 50px;
+  z-index: 0;
+}
+
+/* Scanlines effect */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.3) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.container {
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #800000;
+  padding: 2rem;
+  width: 400px;
+  position: relative;
+  z-index: 1;
+}
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.9em;
+  color: #aaa;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #00ff00;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.title {
+  color: #fff;
+  text-align: center;
+  margin: 1rem 0 2rem;
+  letter-spacing: 2px;
+  font-size: 1.2em;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.8rem;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #800000;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ff0000;
+}
+
+input::placeholder {
+  color: #666;
+}
+
+button {
+  width: 100%;
+  padding: 1rem;
+  background: #800000;
+  border: none;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background: #a00000;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+a {
+  color: #800000;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #ff0000;
+}
+
+#error {
+  color: #ff0000;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9em;
+}
+
+.security-level {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.8em;
+  color: #666;
+}
 </style>
 </head>
 <body>
+  <div class="grid-bg"></div>
+  <div class="scanlines"></div>
 
-<form id="registerForm">
-  <h2>Créer un compte SCP Fondation</h2>
-  <input type="email" id="email" placeholder="Email" required />
-  <input type="password" id="password" placeholder="Mot de passe (6+ caractères)" required minlength="6" />
-  <input type="password" id="passwordConfirm" placeholder="Confirmer mot de passe" required minlength="6" />
-  <button type="submit">S'inscrire</button>
-  <p>Déjà un compte ? <a href="index.html">Se connecter</a></p>
-  <p id="error"></p>
-</form>
+  <div class="container">
+    <div class="security-level">NIVEAU DE SÉCURITÉ: INSCRIPTION</div>
+    
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      SYSTÈME OPÉRATIONNEL
+    </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <h1 class="title">CRÉATION DE COMPTE SCP</h1>
+    
+    <form id="registerForm">
+      <div class="form-group">
+        <input type="email" id="email" placeholder="ADRESSE EMAIL" required />
+      </div>
+      
+      <div class="form-group">
+        <input type="password" id="password" placeholder="MOT DE PASSE (6+ CARACTÈRES)" required minlength="6" />
+      </div>
+      
+      <div class="form-group">
+        <input type="password" id="passwordConfirm" placeholder="CONFIRMER MOT DE PASSE" required minlength="6" />
+      </div>
+      
+      <button type="submit">CRÉER LE COMPTE</button>
+      
+      <div class="login-link">
+        Déjà accrédité ? <a href="index.html">CONNEXION</a>
+      </div>
+      
+      <div id="error"></div>
+    </form>
+  </div>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBFDgtfyPyNPkM2H8WklNfLqlj-bemVY1E",
-  authDomain: "sitedusite108.firebaseapp.com",
-  databaseURL: "https://sitedusite108-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "sitedusite108",
-  storageBucket: "sitedusite108.firebasestorage.app",
-  messagingSenderId: "927427226941",
-  appId: "1:927427226941:web:63a9a600bd1c3bfc85a954"
-};
-firebase.initializeApp(firebaseConfig);
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-const auth = firebase.auth();
-const db = firebase.database();
+  <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBFDgtfyPyNPkM2H8WklNfLqlj-bemVY1E",
+    authDomain: "sitedusite108.firebaseapp.com",
+    databaseURL: "https://sitedusite108-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "sitedusite108",
+    storageBucket: "sitedusite108.firebasestorage.app",
+    messagingSenderId: "927427226941",
+    appId: "1:927427226941:web:63a9a600bd1c3bfc85a954"
+  };
+  firebase.initializeApp(firebaseConfig);
 
-const registerForm = document.getElementById('registerForm');
-const errorP = document.getElementById('error');
+  const auth = firebase.auth();
+  const db = firebase.database();
 
-registerForm.addEventListener('submit', e => {
-  e.preventDefault();
-  errorP.textContent = '';
+  const registerForm = document.getElementById('registerForm');
+  const errorP = document.getElementById('error');
 
-  const email = registerForm.email.value.trim();
-  const password = registerForm.password.value.trim();
-  const passwordConfirm = registerForm.passwordConfirm.value.trim();
+  registerForm.addEventListener('submit', e => {
+    e.preventDefault();
+    errorP.textContent = '';
 
-  if(password !== passwordConfirm){
-    errorP.textContent = "Les mots de passe ne correspondent pas.";
-    return;
-  }
+    const email = registerForm.email.value.trim();
+    const password = registerForm.password.value.trim();
+    const passwordConfirm = registerForm.passwordConfirm.value.trim();
 
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(({user}) => {
-      // Créer profil utilisateur en DB avec accréditation par défaut 1
-      const defaultAccreditation = "1";
-      db.ref('users/' + user.uid).set({
-        email: user.email,
-        accreditation: defaultAccreditation,
-        banned: false,
-        staff: false
-      }).then(() => {
-        alert("Compte créé ! Vous pouvez maintenant vous connecter.");
-        window.location.href = 'index.html';
+    if(password !== passwordConfirm){
+      errorP.textContent = "Les mots de passe ne correspondent pas.";
+      return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(({user}) => {
+        const defaultAccreditation = "1";
+        db.ref('users/' + user.uid).set({
+          email: user.email,
+          accreditation: defaultAccreditation,
+          banned: false,
+          staff: false
+        }).then(() => {
+          alert("Compte créé ! Vous pouvez maintenant vous connecter.");
+          window.location.href = 'index.html';
+        });
+      })
+      .catch(err => {
+        errorP.textContent = err.message;
       });
-    })
-    .catch(err => {
-      errorP.textContent = err.message;
-    });
-});
+  });
+  </script>
+</body>
+</html>
 </script>
 
 </body>
