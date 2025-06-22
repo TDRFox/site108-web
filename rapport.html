@@ -3,173 +3,291 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Rapport Gradé - SCP Fondation</title>
+<title>Rapport Gradé - SCP FOUNDATION</title>
 <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+  }
+
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
-    color: #e0e0e0;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
+    background: #000;
+    color: #fff;
     min-height: 100vh;
-    align-items: center;
+    position: relative;
+    overflow-x: hidden;
   }
-  .container {
-    background: #0f3460dd;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px #16213eaa;
-    max-width: 500px;
+
+  .grid-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    background-image: linear-gradient(0deg, transparent 24%,
+      rgba(128, 0, 0, .05) 25%,
+      rgba(128, 0, 0, .05) 26%,
+      transparent 27%, transparent 74%,
+      rgba(128, 0, 0, .05) 75%,
+      rgba(128, 0, 0, .05) 76%,
+      transparent 77%, transparent),
+      linear-gradient(90deg, transparent 24%,
+      rgba(128, 0, 0, .05) 25%,
+      rgba(128, 0, 0, .05) 26%,
+      transparent 27%, transparent 74%,
+      rgba(128, 0, 0, .05) 75%,
+      rgba(128, 0, 0, .05) 76%,
+      transparent 77%, transparent);
+    background-size: 50px 50px;
+    z-index: 0;
   }
-  h1 {
-    color: #e94560;
+
+  .scanlines {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0.3) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .top-bar {
+    background: #800000;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #600000;
+    position: relative;
+    z-index: 1;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #800000;
+    position: relative;
+    z-index: 1;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
     margin-bottom: 20px;
-    text-align: center;
-    text-shadow: 0 0 5px #e94560cc;
+    font-size: 0.9em;
+    color: #aaa;
   }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    background: #00ff00;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  h1 {
+    color: #fff;
+    margin-bottom: 30px;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
   label {
     display: block;
-    margin-top: 15px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    color: #aaa;
+    letter-spacing: 1px;
   }
-  input[type="text"], textarea, select {
+
+  input, textarea, select {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 6px;
-    border: none;
-    background: #1a1a2e;
-    color: #eee;
-    font-size: 1rem;
-    box-shadow: inset 0 0 8px #16213e;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #800000;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #ff0000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
+  }
+
+  textarea {
+    min-height: 150px;
     resize: vertical;
   }
-  textarea {
-    min-height: 100px;
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23800000'%3E%3Cpath d='M0 0l6 6 6-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
   }
+
   button {
-    margin-top: 20px;
     width: 100%;
-    padding: 12px 0;
-    background: #e94560;
+    padding: 15px;
+    background: #800000;
     border: none;
-    border-radius: 8px;
-    color: white;
-    font-weight: 700;
-    font-size: 1.1rem;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    letter-spacing: 2px;
     cursor: pointer;
-    box-shadow: 0 0 8px #e94560cc;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
   }
+
   button:hover {
-    background: #f9a826;
-    color: #1a1a2e;
-    box-shadow: 0 0 10px #f9a826cc;
+    background: #a00000;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
   }
+
   #statusMsg {
-    margin-top: 15px;
+    margin-top: 20px;
     text-align: center;
-    font-weight: 600;
+    font-size: 14px;
   }
+
   #statusMsg.success {
-    color: #7fff7f;
+    color: #00ff00;
   }
+
   #statusMsg.error {
-    color: #ff6b6b;
+    color: #ff0000;
   }
 </style>
 </head>
 <body>
+  <div class="grid-bg"></div>
+  <div class="scanlines"></div>
+
+  <div class="top-bar">
+    <h1>SCP FOUNDATION</h1>
+    <a href="dashboard.html" style="color: #fff; text-decoration: none;">RETOUR</a>
+  </div>
+
   <div class="container">
-    <h1>Faire un Rapport Gradé</h1>
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      SYSTÈME OPÉRATIONNEL
+    </div>
+
+    <h1>RAPPORT GRADÉ</h1>
+
     <form id="rapportForm">
-      <label for="auteur">Auteur :</label>
-      <input type="text" id="auteur" name="auteur" required placeholder="Ton pseudo ou nom" />
+      <div class="form-group">
+        <label for="auteur">AUTEUR</label>
+        <input type="text" id="auteur" name="auteur" required placeholder="Votre identifiant" />
+      </div>
 
-      <label for="grade">Grade :</label>
-      <input type="text" id="grade" name="grade" required placeholder="Ton grade" />
+      <div class="form-group">
+        <label for="grade">GRADE</label>
+        <input type="text" id="grade" name="grade" required placeholder="Votre grade" />
+      </div>
 
-      <label for="sujet">Sujet :</label>
-      <input type="text" id="sujet" name="sujet" required placeholder="Sujet du rapport" />
+      <div class="form-group">
+        <label for="sujet">SUJET</label>
+        <input type="text" id="sujet" name="sujet" required placeholder="Sujet du rapport" />
+      </div>
 
-      <label for="description">Description :</label>
-      <textarea id="description" name="description" required placeholder="Détails du rapport..."></textarea>
+      <div class="form-group">
+        <label for="description">DESCRIPTION</label>
+        <textarea id="description" name="description" required placeholder="Détails du rapport..."></textarea>
+      </div>
 
-      <label for="gravite">Gravité :</label>
-      <select id="gravite" name="gravite" required>
-        <option value="" disabled selected>Choisir une gravité</option>
-        <option value="Faible">Faible</option>
-        <option value="Moyenne">Moyenne</option>
-        <option value="Élevée">Élevée</option>
-        <option value="Critique">Critique</option>
-      </select>
+      <div class="form-group">
+        <label for="gravite">NIVEAU DE GRAVITÉ</label>
+        <select id="gravite" name="gravite" required>
+          <option value="" disabled selected>Sélectionner un niveau</option>
+          <option value="Faible">FAIBLE</option>
+          <option value="Moyenne">MOYENNE</option>
+          <option value="Élevée">ÉLEVÉE</option>
+          <option value="Critique">CRITIQUE</option>
+        </select>
+      </div>
 
-      <button type="submit">Envoyer le rapport</button>
+      <button type="submit">SOUMETTRE LE RAPPORT</button>
     </form>
+
     <p id="statusMsg"></p>
   </div>
 
-<script>
-  // Remplace cette URL par ton webhook Discord
-  const webhookURL = "https://discord.com/api/webhooks/1386175475793137736/YcriccnDHSK4QZlqrXepiQfBJaTTbYjK-Ws2oUgONGpkcv7toOrnfQp5_kaGMYTN8ajK";
+  <script>
+    const webhookURL = "https://discord.com/api/webhooks/1386175475793137736/YcriccnDHSK4QZlqrXepiQfBJaTTbYjK-Ws2oUgONGpkcv7toOrnfQp5_kaGMYTN8ajK";
 
-  document.getElementById('rapportForm').addEventListener('submit', async function(e){
-    e.preventDefault();
-    const statusMsg = document.getElementById('statusMsg');
-    statusMsg.textContent = '';
-    statusMsg.className = '';
+    document.getElementById('rapportForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const statusMsg = document.getElementById('statusMsg');
+      statusMsg.textContent = '';
+      statusMsg.className = '';
 
-    // Récupérer valeurs
-    const auteur = document.getElementById('auteur').value.trim();
-    const grade = document.getElementById('grade').value.trim();
-    const sujet = document.getElementById('sujet').value.trim();
-    const description = document.getElementById('description').value.trim();
-    const gravite = document.getElementById('gravite').value;
+      const auteur = document.getElementById('auteur').value.trim();
+      const grade = document.getElementById('grade').value.trim();
+      const sujet = document.getElementById('sujet').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const gravite = document.getElementById('gravite').value;
 
-    if(!auteur || !grade || !sujet || !description || !gravite){
-      statusMsg.textContent = "Merci de remplir tous les champs.";
-      statusMsg.className = "error";
-      return;
-    }
+      if(!auteur || !grade || !sujet || !description || !gravite){
+        statusMsg.textContent = "ERREUR: Tous les champs sont requis.";
+        statusMsg.className = "error";
+        return;
+      }
 
-    // Préparer payload Discord (embed)
-    const payload = {
-      embeds: [{
-        title: `📝 Rapport Gradé - ${sujet}`,
-        color: 15158332, // rouge foncé
-        fields: [
-          { name: "Auteur", value: auteur, inline: true },
-          { name: "Grade", value: grade, inline: true },
-          { name: "Gravité", value: gravite, inline: true },
-          { name: "Description", value: description }
-        ],
-        timestamp: new Date().toISOString()
-      }]
-    };
+      const payload = {
+        embeds: [{
+          title: `📝 Rapport Gradé - ${sujet}`,
+          color: 15158332,
+          fields: [
+            { name: "Auteur", value: auteur, inline: true },
+            { name: "Grade", value: grade, inline: true },
+            { name: "Gravité", value: gravite, inline: true },
+            { name: "Description", value: description }
+          ],
+          timestamp: new Date().toISOString()
+        }]
+      };
 
-    try {
-      const response = await fetch(webhookURL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
+      try {
+        const response = await fetch(webhookURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
 
-      if(response.ok){
-        statusMsg.textContent = "Rapport envoyé avec succès !";
-        statusMsg.className = "success";
-        this.reset();
-      } else {
-        statusMsg.textContent = `Erreur lors de l'envoi : ${response.status}`;
+        if(response.ok){
+          statusMsg.textContent = "RAPPORT TRANSMIS AVEC SUCCÈS";
+          statusMsg.className = "success";
+          this.reset();
+        } else {
+          statusMsg.textContent = `ERREUR DE TRANSMISSION: ${response.status}`;
+          statusMsg.className = "error";
+        }
+      } catch (err) {
+        statusMsg.textContent = "ERREUR RÉSEAU: TRANSMISSION IMPOSSIBLE";
         statusMsg.className = "error";
       }
-    } catch (err) {
-      statusMsg.textContent = "Erreur réseau ou webhook invalide.";
-      statusMsg.className = "error";
-    }
-  });
-</script>
+    });
+  </script>
 </body>
 </html>
