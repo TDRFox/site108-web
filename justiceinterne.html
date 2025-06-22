@@ -5,65 +5,148 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Justice Interne SCP Fondation</title>
 <style>
-/* Même CSS global que précédemment */
 * {
-  margin: 0; padding: 0; box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  color: #e0e0e0;
-  padding: 20px 40px;
+  font-family: 'Courier New', monospace;
+  background-color: #000;
+  color: #fff;
   min-height: 100vh;
-  display: flex; flex-direction: column; align-items: center;
+  position: relative;
+  overflow-x: hidden;
 }
+
+/* Grid Background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.97) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(0, 0, 0, 0.97) 1px, transparent 1px);
+  background-size: 30px 30px;
+  background-position: center center;
+  z-index: -1;
+}
+
+/* Scanlines */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, transparent 1px, transparent 2px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Top Bar */
+.top-bar {
+  background: #880000;
+  color: white;
+  padding: 10px 20px;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  background: #00ff00;
+  border-radius: 50%;
+  box-shadow: 0 0 5px #00ff00;
+}
+
 .container {
   max-width: 960px;
-  width: 100%;
-  background: #0f3460dd;
-  border-radius: 12px;
-  box-shadow: 0 0 15px #16213eaa;
-  padding: 30px 40px;
-  backdrop-filter: blur(10px);
+  width: 90%;
+  margin: 50px auto;
+  background: rgba(20, 20, 20, 0.8);
+  border: 2px solid #880000;
+  padding: 30px;
+  position: relative;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 20px rgba(136, 0, 0, 0.3);
 }
-h1, h2, h3 {
+
+h1 {
+  color: #880000;
+  font-size: 2em;
   margin-bottom: 20px;
-  font-weight: 700;
-  color: #e94560;
-  text-shadow: 0 0 5px #e94560cc;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 5px rgba(136, 0, 0, 0.5);
 }
+
 p {
   margin-bottom: 15px;
-  line-height: 1.5;
+  line-height: 1.6;
   font-size: 1.1rem;
+  letter-spacing: 0.5px;
 }
+
 a {
-  color: #f9a826;
+  color: #880000;
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 5px 10px;
+  border: 1px solid transparent;
 }
+
 a:hover {
-  color: #e94560;
-  text-decoration: underline;
+  color: #ff0000;
+  border-color: #880000;
+  background: rgba(136, 0, 0, 0.1);
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
+
 @media (max-width: 600px) {
-  body { padding: 15px 20px; }
-  .container { padding: 20px 25px; }
+  .container {
+    width: 95%;
+    padding: 20px;
+  }
 }
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Justice Interne</h1>
-    <p>Page accessible aux accréditations ≥ 1</p>
-    <p><a href="dashboard.html">Retour au tableau de bord</a></p>
+  <div class="top-bar">
+    SYSTÈME DE JUSTICE INTERNE - SITE-108
+    <div class="status">
+      <div class="status-dot"></div>
+      SYSTÈME OPÉRATIONNEL
+    </div>
   </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <div class="container">
+    <h1>Justice Interne</h1>
+    <p>NIVEAU D'ACCRÉDITATION REQUIS: ≥ 1</p>
+    <p><a href="dashboard.html">« RETOUR AU TABLEAU DE BORD</a></p>
+  </div>
 
-<script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
 const firebaseConfig = {
   apiKey: "AIzaSyBFDgtfyPyNPkM2H8WklNfLqlj-bemVY1E",
   authDomain: "sitedusite108.firebaseapp.com",
