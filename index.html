@@ -107,8 +107,10 @@ input:focus, select:focus {
       <label for="password">Mot de passe :</label>
       <input type="password" id="password" required />
 
-      <button type="submit">Connexion / Création</button>
+      <button type="submit">Se connecter</button>
     </form>
+
+    <button onclick="window.location.href='register.html'">Créer un compte</button>
 
     <button id="googleLogin">Se connecter avec Google</button>
     <button id="discordLogin">Se connecter avec Discord</button>
@@ -145,18 +147,8 @@ input:focus, select:focus {
           await auth.signInWithEmailAndPassword(email, password);
           window.location.href = 'dashboard.html';
         } catch (error) {
-          if (error.code === 'auth/user-not-found') {
-            try {
-              await auth.createUserWithEmailAndPassword(email, password);
-              window.location.href = 'dashboard.html';
-            } catch (err) {
-              status.textContent = err.message;
-              status.className = 'error';
-            }
-          } else {
-            status.textContent = error.message;
-            status.className = 'error';
-          }
+          status.textContent = error.message;
+          status.className = 'error';
         }
       });
     });
