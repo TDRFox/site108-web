@@ -107,7 +107,7 @@ input:focus, select:focus {
       <label for="password">Mot de passe :</label>
       <input type="password" id="password" required />
 
-      <button type="submit" onclick="onClick(event)">Connexion / Création</button>
+      <button type="submit">Connexion / Création</button>
     </form>
 
     <button id="googleLogin">Se connecter avec Google</button>
@@ -119,14 +119,6 @@ input:focus, select:focus {
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script>
-    function onClick(e) {
-      e.preventDefault();
-      grecaptcha.enterprise.ready(async () => {
-        const token = await grecaptcha.enterprise.execute('6LcMiGkrAAAAAE7T9ertoFa_QuyaJDh7NXw-s5a9', {action: 'LOGIN'});
-        document.getElementById('emailForm').dispatchEvent(new Event('submit'));
-      });
-    }
-
     const firebaseConfig = {
       apiKey: "AIzaSyBFDgtfyPyNPkM2H8WklNfLqlj-bemVY1E",
       authDomain: "sitedusite108.firebaseapp.com",
@@ -141,46 +133,57 @@ input:focus, select:focus {
 
     document.getElementById('emailForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const status = document.getElementById('statusMsg');
 
-      try {
-        await auth.signInWithEmailAndPassword(email, password);
-        window.location.href = 'dashboard.html';
-      } catch (error) {
-        if (error.code === 'auth/user-not-found') {
-          try {
-            await auth.createUserWithEmailAndPassword(email, password);
-            window.location.href = 'dashboard.html';
-          } catch (err) {
-            status.textContent = err.message;
+      grecaptcha.enterprise.ready(async () => {
+        const token = await grecaptcha.enterprise.execute('6LcMiGkrAAAAAE7T9ertoFa_QuyaJDh7NXw-s5a9', {action: 'LOGIN'});
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const status = document.getElementById('statusMsg');
+
+        try {
+          await auth.signInWithEmailAndPassword(email, password);
+          window.location.href = 'dashboard.html';
+        } catch (error) {
+          if (error.code === 'auth/user-not-found') {
+            try {
+              await auth.createUserWithEmailAndPassword(email, password);
+              window.location.href = 'dashboard.html';
+            } catch (err) {
+              status.textContent = err.message;
+              status.className = 'error';
+            }
+          } else {
+            status.textContent = error.message;
             status.className = 'error';
           }
-        } else {
-          status.textContent = error.message;
-          status.className = 'error';
         }
-      }
+      });
     });
 
     document.getElementById('googleLogin').addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then(result => {
-          window.location.href = 'dashboard.html';
-        })
-        .catch(error => {
-          document.getElementById('statusMsg').textContent = error.message;
-          document.getElementById('statusMsg').className = 'error';
-        });
+      grecaptcha.enterprise.ready(async () => {
+        await grecaptcha.enterprise.execute('6LcMiGkrAAAAAE7T9ertoFa_QuyaJDh7NXw-s5a9', {action: 'LOGIN'});
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
+          .then(result => {
+            window.location.href = 'dashboard.html';
+          })
+          .catch(error => {
+            document.getElementById('statusMsg').textContent = error.message;
+            document.getElementById('statusMsg').className = 'error';
+          });
+      });
     });
 
     document.getElementById('discordLogin').addEventListener('click', () => {
-      const redirect = encodeURIComponent(window.location.href);
-      const clientId = "TON_CLIENT_ID_DISCORD";
-      const scope = "identify";
-      window.location.href = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirect}&response_type=token&scope=${scope}`;
+      grecaptcha.enterprise.ready(async () => {
+        await grecaptcha.enterprise.execute('6LcMiGkrAAAAAE7T9ertoFa_QuyaJDh7NXw-s5a9', {action: 'LOGIN'});
+        const redirect = encodeURIComponent(window.location.href);
+        const clientId = "TON_CLIENT_ID_DISCORD";
+        const scope = "identify";
+        window.location.href = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirect}&response_type=token&scope=${scope}`;
+      });
     });
   </script>
 </body>
