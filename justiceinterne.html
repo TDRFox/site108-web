@@ -5,18 +5,63 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Justice Interne SCP Fondation</title>
 <style>
-  body { font-family: Arial, sans-serif; background:#121212; color:#eee; padding:20px; }
-  a { color:#5c6bc0; }
+/* Même CSS global que précédemment */
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: #e0e0e0;
+  padding: 20px 40px;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+}
+.container {
+  max-width: 960px;
+  width: 100%;
+  background: #0f3460dd;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #16213eaa;
+  padding: 30px 40px;
+  backdrop-filter: blur(10px);
+}
+h1, h2, h3 {
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #e94560;
+  text-shadow: 0 0 5px #e94560cc;
+}
+p {
+  margin-bottom: 15px;
+  line-height: 1.5;
+  font-size: 1.1rem;
+}
+a {
+  color: #f9a826;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+a:hover {
+  color: #e94560;
+  text-decoration: underline;
+}
+@media (max-width: 600px) {
+  body { padding: 15px 20px; }
+  .container { padding: 20px 25px; }
+}
 </style>
 </head>
 <body>
-
-<h1>Justice Interne</h1>
-<p>Page accessible aux accréditations ≥ 1</p>
-<p><a href="dashboard.html">Retour au tableau de bord</a></p>
+  <div class="container">
+    <h1>Justice Interne</h1>
+    <p>Page accessible aux accréditations ≥ 1</p>
+    <p><a href="dashboard.html">Retour au tableau de bord</a></p>
+  </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -31,28 +76,29 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+const db = firebase.database();
 
 auth.onAuthStateChanged(user => {
-  if(!user){
+  if (!user) {
     alert("Non connecté !");
     window.location.href = 'index.html';
     return;
   }
-
-  // Vérifier accréditation dans sessionStorage
-  const userStr = sessionStorage.getItem('user');
-  if(!userStr){
-    alert("Erreur données utilisateur");
-    window.location.href = 'dashboard.html';
-    return;
-  }
-  const userData = JSON.parse(userStr);
-  if(parseInt(userData.accreditation) < 1){
-    alert("Accès refusé. Accréditation insuffisante.");
-    window.location.href = 'dashboard.html';
-  }
+  db.ref('users/' + user.uid).once('value').then(snapshot => {
+    const data = snapshot.val();
+    if (!data) {
+      alert("Données utilisateur introuvables.");
+      auth.signOut();
+      window.location.href = 'index.html';
+      return;
+    }
+    const accreditation = parseInt(data.accreditation) || 0;
+    if (accreditation < 1) {
+      alert("Accès refusé. Accréditation insuffisante.");
+      window.location.href = 'dashboard.html';
+    }
+  });
 });
 </script>
-
 </body>
 </html>
