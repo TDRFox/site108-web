@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Justice Interne SCP Fondation</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#121212; color:#eee; padding:20px; }
+  a { color:#5c6bc0; }
+</style>
+</head>
+<body>
+
+<h1>Justice Interne</h1>
+<p>Page accessible aux accréditations ≥ 1</p>
+<p><a href="dashboard.html">Retour au tableau de bord</a></p>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBFDgtfyPyNPkM2H8WklNfLqlj-bemVY1E",
+  authDomain: "sitedusite108.firebaseapp.com",
+  databaseURL: "https://sitedusite108-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sitedusite108",
+  storageBucket: "sitedusite108.firebasestorage.app",
+  messagingSenderId: "927427226941",
+  appId: "1:927427226941:web:63a9a600bd1c3bfc85a954"
+};
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+auth.onAuthStateChanged(user => {
+  if(!user){
+    alert("Non connecté !");
+    window.location.href = 'index.html';
+    return;
+  }
+
+  // Vérifier accréditation dans sessionStorage
+  const userStr = sessionStorage.getItem('user');
+  if(!userStr){
+    alert("Erreur données utilisateur");
+    window.location.href = 'dashboard.html';
+    return;
+  }
+  const userData = JSON.parse(userStr);
+  if(parseInt(userData.accreditation) < 1){
+    alert("Accès refusé. Accréditation insuffisante.");
+    window.location.href = 'dashboard.html';
+  }
+});
+</script>
+
+</body>
+</html>

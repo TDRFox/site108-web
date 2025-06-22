@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SCP Fondation - Connexion</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#121212; color:#eee; display:flex; justify-content:center; align-items:center; height:100vh; }
+  form { background:#222; padding:20px; border-radius:8px; width:320px; }
+  input, button { width:100%; padding:10px; margin:8px 0; border:none; border-radius:4px; }
+  input { background:#333; color:#eee; }
+  button { background:#5c6bc0; color:#fff; cursor:pointer; }
+  button:hover { background:#3949ab; }
+  a { color:#5c6bc0; text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  #error {color:#ff5555;}
+</style>
+</head>
+<body>
+
+<form id="loginForm">
+  <h2>Connexion SCP Fondation</h2>
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Mot de passe" required minlength="6" />
+  <button type="submit">Se connecter</button>
+  <p>Pas encore inscrit ? <a href="register.html">Créer un compte</a></p>
+  <p id="error"></p>
+</form>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+// Ta config Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBFDgtfyPyNPkM2H8WklNfLqlj-bemVY1E",
+  authDomain: "sitedusite108.firebaseapp.com",
+  databaseURL: "https://sitedusite108-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sitedusite108",
+  storageBucket: "sitedusite108.firebasestorage.app",
+  messagingSenderId: "927427226941",
+  appId: "1:927427226941:web:63a9a600bd1c3bfc85a954"
+};
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.database();
+
+const loginForm = document.getElementById('loginForm');
+const errorP = document.getElementById('error');
+
+loginForm.addEventListener('submit', e => {
+  e.preventDefault();
+  errorP.textContent = '';
+
+  const email = loginForm.email.value.trim();
+  const password = loginForm.password.value.trim();
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then(({user}) => {
+      // Récupérer les données dans la DB
+      db.ref('users/' + user.uid).once('value').then(snapshot => {
+        const data = snapshot.val();
+        if (!data) {
+          errorP.textContent = "Compte non valide.";
+          auth.signOut();
+          return;
+        }
+        if(data.banned){
+          errorP.textContent = "Compte banni.";
+          auth.signOut();
+          return;
+        }
+        // Stocker en sessionStorage
+        sessionStorage.setItem('user', JSON.stringify({
+          uid: user.uid,
+          email: user.email,
+          accreditation: data.accreditation,
+          banned: data.banned || false,
+          staff: data.staff || false
+        }));
+        window.location.href = 'dashboard.html';
+      });
+    })
+    .catch(err => {
+      errorP.textContent = err.message;
+    });
+});
+</script>
+
+</body>
+</html>

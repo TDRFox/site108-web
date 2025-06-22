@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Panel Admin SCP Fondation</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#121212; color:#eee; padding:20px; }
+  h1 { margin-bottom: 20px; }
+  input, select, button {
+    padding: 8px; margin: 8px 0;
+    border-radius: 4px; border:none;
+    background:#333; color:#eee;
+  }
+  button {
+    background:#5c6bc0; cursor:pointer;
+  }
+  button:hover { background:#3949ab; }
+  .user-list {
+    margin-top: 20px;
+  }
+  .user-list table {
+    width: 100%; border-collapse: collapse;
+  }
+  .user-list th, .user-list td {
+    border: 1px solid #555; padding: 8px; text-align:center;
+  }
+</style>
+</head>
+<body>
+
+<h1>Panel Admin SCP Fondation</h1>
+
+<div>
+  <label for="userEmailInput">Email utilisateur :</label><br/>
+  <input type="email" id="userEmailInput" placeholder="Ex: utilisateur@scp.com" />
+  <br/>
+  <label for="actionSelect">Action :</label><br/>
+  <select id="actionSelect">
+    <option value="ban">Bannir</option>
+    <option value="unban">Débannir</option>
+    <option value="promote">Promouvoir Staff</option>
+    <option value="demote">Rétrograder Staff</option>
+    <option value="setAccreditation">Définir accréditation</option>
+  </select>
+  <br/>
+  <input type="number" id="accreditationLevel" placeholder="Niveau accréditation (1-10, Omni=10)" min="1" max="10" style="display:none;" />
+  <br/>
+  <button id="doActionBtn">Valider</button>
+  <p id="message"></p>
+</div>
+
+<div class="user-list">
+  <h2>Liste des utilisateurs</h2>
+  <table>
+    <thead>
+      <tr><th>Email</th><th>Accréditation</th><th>Banni</th><th>Staff</th></tr>
+    </thead>
+    <tbody id="usersTableBody"></tbody>
+  </table>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBFDgtfyPyNPkM2H8WklNfLqlj-bemVY1E",
+  authDomain: "sitedusite108.firebaseapp.com",
+  databaseURL: "https://sitedusite108-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "sitedusite108",
+  storageBucket: "sitedusite108.firebasestorage.app",
+  messagingSenderId: "927427226941",
+  appId: "1:927427226941:web:63a9a600bd1c3bfc85a954"
+};
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.database();
+
+const userEmailInput = document.getElementById('userEmailInput');
+const actionSelect = document.getElementById('actionSelect');
+const accreditationInput = document.getElementById('accreditationLevel');
+const doActionBtn = document.getElementById('doActionBtn');
+const usersTableBody = document.getElementById('usersTableBody');
+const messageP = document.getElementById('message');
+
+let currentUser;
+
+function checkAdmin(){
+  const userStr = sessionStorage.getItem('user');
+  if(!userStr){
+    alert("Non connecté");
+    window.location.href = 'index.html';
+    return false;
+  }
+  currentUser = JSON.parse(userStr);
+  if(!currentUser.staff){
+    alert("Accès refusé");
+    window.location.href = 'dashboard.html';
+    return false;
+  }
+  return true;
+}
+
+function loadUsers(){
+  db.ref('users').once('value').then(snapshot => {
+    usersTableBody.innerHTML = '';
+    snapshot.forEach(child => {
+      const u = child.val();
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${u.email}</td><td>${u.accreditation}</td><td>${u.banned ? 'Oui' : 'Non'}</td><td>${u.staff ? 'Oui' : 'Non'}</td>`;
+      usersTableBody.appendChild(tr);
+    });
+  });
+}
+
+if(checkAdmin()){
+  loadUsers();
+}
+
+actionSelect.addEventListener('change', () => {
+  accreditationInput.style.display = actionSelect.value === 'setAccreditation' ? 'block' : 'none';
+});
+
+doActionBtn.addEventListener('click', () => {
+  messageP.textContent = '';
+  const email = userEmailInput.value.trim();
+  const action = actionSelect.value;
+  const accLevel = accreditationInput.value.trim();
+
+  if(!email){
+    messageP.textContent = "Veuillez saisir un email.";
+    return;
+  }
+
+  db.ref('users').orderByChild('email').equalTo(email).once('value').then(snapshot => {
+    if(snapshot.exists()){
+      const userKey = Object.keys(snapshot.val())[0];
+      const userRef = db.ref('users/' + userKey);
+
+      switch(action){
+        case 'ban':
+          userRef.update({banned: true});
+          messageP.textContent = `Utilisateur ${email} banni.`;
+          break;
+        case 'unban':
+          userRef.update({banned: false});
+          messageP.textContent = `Utilisateur ${email} débanni.`;
+          break;
+        case 'promote':
+          userRef.update({staff: true});
+          messageP.textContent = `Utilisateur ${email} promu staff.`;
+          break;
+        case 'demote':
+          userRef.update({staff: false});
+          messageP.textContent = `Utilisateur ${email} rétrogradé staff.`;
+          break;
+        case 'setAccreditation':
+          let num = parseInt(accLevel);
+          if(isNaN(num) || num < 1 || num > 10){
+            messageP.textContent = "Niveau accréditation invalide (1-10).";
+            return;
+          }
+          userRef.update({accreditation: num.toString()});
+          messageP.textContent = `Utilisateur ${email} accréditation mise à jour à ${num}.`;
+          break;
+        default:
+          messageP.textContent = "Action inconnue.";
+      }
+      loadUsers();
+    } else {
+      messageP.textContent = "Utilisateur non trouvé.";
+    }
+  });
+});
+</script>
+
+</body>
+</html>
