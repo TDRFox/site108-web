@@ -3,31 +3,178 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Conseil O5 - SCP Fondation</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Conseil O5 - SCP FOUNDATION</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(0deg, transparent 24%,
+        rgba(128, 0, 0, .05) 25%,
+        rgba(128, 0, 0, .05) 26%,
+        transparent 27%, transparent 74%,
+        rgba(128, 0, 0, .05) 75%,
+        rgba(128, 0, 0, .05) 76%,
+        transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%,
+        rgba(128, 0, 0, .05) 25%,
+        rgba(128, 0, 0, .05) 26%,
+        transparent 27%, transparent 74%,
+        rgba(128, 0, 0, .05) 75%,
+        rgba(128, 0, 0, .05) 76%,
+        transparent 77%, transparent);
+      background-size: 50px 50px;
+      z-index: 0;
+    }
+
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0) 50%,
+        rgba(0, 0, 0, 0.3) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .top-bar {
+      background: #800000;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #600000;
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+      color: #aaa;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #00ff00;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    h1, h2 {
+      color: #fff;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    section {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #800000;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    li {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(128, 0, 0, 0.3);
+      color: #ddd;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+
+    a {
+      color: #800000;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    a:hover {
+      color: #ff0000;
+      text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    }
+
+    .warning {
+      color: #ff0000;
+      font-size: 0.9em;
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
+  <div class="grid-bg"></div>
+  <div class="scanlines"></div>
+
+  <div class="top-bar">
+    <h1>SCP FOUNDATION</h1>
+    <a href="dashboard.html">RETOUR</a>
+  </div>
+
   <div class="container">
-    <h1>Conseil O5</h1>
-    <p>Zone strictement réservée aux membres du Conseil O5 (accréditation ≥ 8)</p>
-    <p><a href="dashboard.html">Retour au tableau de bord</a></p>
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      SYSTÈME OPÉRATIONNEL
+    </div>
 
     <section>
-      <h2>Membres Actuels du Conseil O5</h2>
+      <h2>CONSEIL O5</h2>
+      <p>Zone strictement réservée aux membres du Conseil O5 (accréditation ≥ 8)</p>
+    </section>
+
+    <section>
+      <h2>MEMBRES ACTUELS DU CONSEIL O5</h2>
       <ul>
         <li>O5-1 : Directeur Suprême</li>
         <li>O5-2 : Chef des opérations</li>
-        <li>O5-3 : Responsable du Comité d’éthique</li>
+        <li>O5-3 : Responsable du Comité d'éthique</li>
         <li>O5-4 : Chef de la sécurité globale</li>
         <li>O5-5 : Expert en relations inter-agences</li>
-        <!-- Liste fictive, à adapter -->
       </ul>
     </section>
 
     <section>
-      <h2>Informations Sensibles</h2>
+      <h2>INFORMATIONS SENSIBLES</h2>
       <p>Accès restreint aux membres du Conseil O5. Toute diffusion non autorisée est passible de sanctions sévères.</p>
-      <!-- Ajoute ici tout contenu RP ou fonctionnalités spécifiques -->
+      <p class="warning">NIVEAU D'ACCRÉDITATION MAXIMAL REQUIS</p>
     </section>
   </div>
 
